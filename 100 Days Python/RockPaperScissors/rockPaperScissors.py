@@ -1,7 +1,10 @@
 import random
 
-''' The idea of this program is to calculate a rock, paper and scissors based in a simple calculation of (user_hand_id) - (cpu_hand_id), where scissors(1), paper(2) and rock(3). The result of such calculation will be a Draw if equals to ZERO or (user_hand_id == cpu_hand_id). For user winning hand the result must be 2(paper - rock) or -1(scissors - paper; paper - rock). Everything else (-2, 1) is a win hand for CPU.'''
-
+''' The idea of this program is to calculate a rock, paper and scissors based in a simple calculation of 
+(user_hand_id) - (cpu_hand_id), where scissors(1), paper(2) and rock(3). The result of such calculation
+will be a Draw if equals to ZERO or (user_hand_id == cpu_hand_id).
+For user winning hand the result must be 2(paper - rock) or -1(scissors - paper; paper - rock).
+Everything else (-2, 1) is a win hand for CPU.'''
 
 rock = '''
     _______
