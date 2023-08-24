@@ -1,5 +1,7 @@
 from dataclasses import asdict
 
+"""Simple code to encrypt a message using caesar cipher,
+This code can encrypt and decrypt the message"""
 
 logo = """           
  ,adPPYba, ,adPPYYba,  ,adPPYba, ,adPPYba, ,adPPYYba, 8b,dPPYba,  
