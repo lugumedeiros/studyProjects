@@ -9,6 +9,7 @@ from gamedata import data
 import gameart
 
 r_person1 = random.randint(0,49)
+r_person2 = 0
 p1_name = data[r_person1]['name']
 p1_description = data[r_person1]['description']
 p1_country = data[r_person1]['country']
@@ -22,7 +23,9 @@ while won:
     print(f'Your current count is {counter}')
     print(f'Compare A: {p1_name}, a {p1_description}, from {p1_country}', end='')
     print(gameart.vs)
-    r_person2 = random.randint(0,49)
+    
+    while r_person2 == r_person1:
+        r_person2 = random.randint(0,49)
     
     p2_name = data[r_person2]['name']
     p2_description = data[r_person2]['description']
