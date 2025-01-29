@@ -3,10 +3,6 @@ I wanted **V3** to be printed, but I made a mistake while moving my files and go
 
 ![Image](https://github.com/user-attachments/assets/ab295c03-2014-45bf-af4f-09dfc522b655)
 
-My initial idea was to make a puzzle style pcb where each piece would have a different frequency for different sounds, and it would be possible to assemble 3 different pieces together like a puzzle game, creating then a bigger toy. I fastly turned down the idea of printing all PCB due my unstable financial situation at the moment, in the end it was a mistake due the enourmous taxes and delivery I paid which would made no difference.
-
-![Image](https://github.com/user-attachments/assets/d44c966c-2b5c-4cbd-9b5e-f14244d99389)
-
 I made sure to have a little hole on the border to use this toy as a keychain, due to the size, and even though I didn't assembled it, I think it ended really nice.
 
 ![Image](https://github.com/user-attachments/assets/e64df885-38a4-4285-a5ee-49481a1057ce)
@@ -19,7 +15,7 @@ This version uses a simple LDO to 5V, NPN Amplifier and a 555 Generic Counter. I
 ## V2 - SMD
 This is the final stage of my current SMD version I want to send to production. This version doesn't have a LDO due to being made for a CR2032 battery, the 555 counter was changed to a CMOS one for the low voltage supplied.
 
-The new format is made to be "assembled" as a puzzle piece with the other 2 versions that have different frequencies.
+My initial idea was to make a puzzle style pcb where each piece would have a different frequency for different sounds, and it would be possible to assemble 3 different pieces together like a puzzle game, creating then a bigger toy. I fastly turned down the idea of printing all PCB due my unstable financial situation at the moment, in the end it was a mistake due the enourmous taxes and delivery I paid which would made no difference.
 ![v2.1](https://github.com/user-attachments/assets/65739203-9141-4d6c-96b5-121c185aebc2)
 ![v2.2](https://github.com/user-attachments/assets/1fe81a70-0a1b-4d52-9e54-7d1929c96600)
 
