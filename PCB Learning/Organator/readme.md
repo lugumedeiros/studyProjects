@@ -26,6 +26,6 @@ This is an older version, but has the same concept
 ![v2?](https://github.com/user-attachments/assets/5bd175b2-7bf0-4b41-9c7a-083b4815f1c0)
 ## V3 - SMD
 This is almost the same as the V2, but with bigger packages for easier manual soldering. Assembly is hella expensive :(
-
+obs.: There's a mistake in the 2 capacitors footprints.
 ![v3.1](https://github.com/user-attachments/assets/d1f69b4d-94f4-488d-ac6c-5d011a1a9c04)
 ![v3.2](https://github.com/user-attachments/assets/bc100e10-0863-46ee-8396-5b75a5359c83)
