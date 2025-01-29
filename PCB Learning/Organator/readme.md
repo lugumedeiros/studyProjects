@@ -7,6 +7,10 @@ My initial idea was to make a puzzle style pcb where each piece would have a dif
 
 ![Image](https://github.com/user-attachments/assets/d44c966c-2b5c-4cbd-9b5e-f14244d99389)
 
+I made sure to have a little hole on the border to use this toy as a keychain, due to the size, and even though I didn't assembled it, I think it ended really nice.
+
+![Image](https://github.com/user-attachments/assets/e64df885-38a4-4285-a5ee-49481a1057ce)
+
 ## V1 - PTH Version
 This was the first version I made from a course I was watching on Udemy, it's very similar to the one created by the teacher and it has only PTH components.
 
