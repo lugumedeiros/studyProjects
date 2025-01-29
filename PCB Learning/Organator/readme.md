@@ -1,8 +1,10 @@
 ## Printed Version
 I wanted **V3** to be printed, but I made a mistake while moving my files and got this version. This is a previous version of to the **V2** available here, it has almost the same components, where the biggest difference is that the newer version uses a SMD battery holder instead.
+
 ![Image](https://github.com/user-attachments/assets/ab295c03-2014-45bf-af4f-09dfc522b655)
 
 My initial idea was to make a puzzle style pcb where each piece would have a different frequency for different sounds, and it would be possible to assemble 3 different pieces together like a puzzle game, creating then a bigger toy. I fastly turned down the idea of printing all PCB due my unstable financial situation at the moment, in the end it was a mistake due the enourmous taxes and delivery I paid which would made no difference.
+
 ![Image](https://github.com/user-attachments/assets/d44c966c-2b5c-4cbd-9b5e-f14244d99389)
 
 ## V1 - PTH Version
