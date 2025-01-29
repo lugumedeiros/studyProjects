@@ -13,6 +13,7 @@ This was the first version I made from a course I was watching on Udemy, it's ve
 This version uses a simple LDO to 5V, NPN Amplifier and a 555 Generic Counter. It has a 9V battery package slot but it can be used any other battery over 5V, it will mainly depend on the LDO properties.
 
 ![v1](https://github.com/user-attachments/assets/067a5313-ef00-40ec-a5b2-5bf3da2928f4)
+
 ## V2 - SMD
 This is the final stage of my current SMD version I want to send to production. This version doesn't have a LDO due to being made for a CR2032 battery, the 555 counter was changed to a CMOS one for the low voltage supplied.
 
@@ -24,8 +25,10 @@ My initial idea was to make a puzzle style pcb where each piece would have a dif
 This is an older version, but has the same concept
 
 ![v2?](https://github.com/user-attachments/assets/5bd175b2-7bf0-4b41-9c7a-083b4815f1c0)
+
 ## V3 - SMD
 This is almost the same as the V2, but with bigger packages for easier manual soldering. Assembly is hella expensive :(
 obs.: There's a mistake in the 2 capacitors footprints.
+
 ![v3.1](https://github.com/user-attachments/assets/d1f69b4d-94f4-488d-ac6c-5d011a1a9c04)
 ![v3.2](https://github.com/user-attachments/assets/bc100e10-0863-46ee-8396-5b75a5359c83)
