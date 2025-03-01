@@ -9,12 +9,11 @@ opts = trainingOptions("adam","ValidationData",augValid,"Shuffle","every-epoch",
 
 % Test imds
 filenameTest = "myTestData";
-imdsASLTest = imageDatastore(filename,"IncludeSubfolders", true,"LabelSource", "foldernames");
+imdsASLTest = imageDatastore(filenameTest,"IncludeSubfolders", true,"LabelSource", "foldernames");
 augTest = augmentedImageDatastore([224, 224], imdsASLTest);
 
 %   Transfer learning with rez50
-%   This test gave me 0.9767 of accuracy. Too high for my taste, test data
-% must be similar to the train data.
+%   This test gave me ~91% accuracy
 %   It took me 45 min to train but it reached plato at ~25min and I forgot to
 % increase validation frequency.
 net_rez50ASL = trainNetwork(augTrain, lgraph_1, opts);
@@ -24,7 +23,7 @@ confusionchart(imdsASLTest.Labels,rez50ALS_results);
 
 %   Simple empty model from zero.
 %   This time validation frequency was on 15
-%   This test gave me 0.9383 of accuracu and took 8 min.
+%   This test gave me ~31% of accuracy and took 8 min.
 %   I believe it has the same problem as the other test, test data is
 % too similar to train data...
 %   
