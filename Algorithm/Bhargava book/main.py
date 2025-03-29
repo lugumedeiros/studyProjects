@@ -1,3 +1,6 @@
+"""Code that I used to learn about some algorithms"""
+
+from collections import deque
 import random
 import time
 
@@ -34,17 +37,79 @@ def merge_sort(lst):
         lst_a = lst[: lst_size//2]
         lst_b = lst[lst_size//2 :]
         return sort(merge_sort(lst_a), merge_sort(lst_b))
+    
+def bfs_search(graph, start_search, item_search):
+    # Tried to do my own just from concepts, not so bad I think
+    invalid_graph = []
+    search_graph = graph[start_search]
+    degree = 1
+    
+    while len(search_graph) > 0:
+        if item_search in search_graph:
+            print(f"item found!, {degree} items distant from start")
+            break
+        else:
+            temp_graph = search_graph.copy()
+            for key in search_graph:
+                invalid_graph.append(key)
+                temp_graph += graph[key]
+            new_graph = []
+            for key in temp_graph:
+                if not key in invalid_graph:
+                    new_graph.append(key)
+        search_graph = new_graph
+        degree += 1
+
+def bfs_search2(graph, start_search, item_search):
+    # This one I applied FIFO, first time I used this...
+    degree = 0
+    fifo = deque([(start_search, degree)]) # List of tuples
+    invalid_keys = set([start_search])
+
+    while len(fifo) > 0:
+        key, degree = fifo[0]
+        if key == item_search:
+            print(f"item found!, {degree} items distant from start")
+            return
+        else:
+            fifo.popleft()
+            for subkey in graph[key]:
+                if not subkey in invalid_keys:
+                    fifo.append((subkey, degree + 1))
+
+
+def get_full_graph():
+    d = {}
+    d["YOU"] = ["ALICE","BOB"]
+    d["ALICE"] = ["ANUJ", "PEGGY"]
+    d["BOB"] = ["TOM", "JON"]
+    d["ANUJ"] = []
+    d["PEGGY"] = []
+    d["TOM"] = []
+    d["JON"] = ["CLAIR", "JAIR"]
+    d["CLAIR"] = []
+    d["JAIR"] = []
+    return d
+GRAPH = get_full_graph()
 
 LISTA = [random.randint(0, 100) for _ in range(100000)]
 
 s = time.perf_counter()
-r = merge_sort(LISTA.copy())
+r = bfs_search(GRAPH.copy(), "YOU", "JAIR")
 e = time.perf_counter() - s
-# print(r)
-print(f"Merge: in {e}")
+print(f"Sort(BFS): in {e}s")
 
 s = time.perf_counter()
-r = quicksort(LISTA.copy())
+r = bfs_search2(GRAPH.copy(), "YOU", "JAIR")
 e = time.perf_counter() - s
-# print(r)
-print(f"QuickSort: in {e}")
+print(f"Sort(BFS): in {e}s")
+
+# s = time.perf_counter()
+# r = merge_sort(LISTA.copy())
+# e = time.perf_counter() - s
+# print(f"Merge: in {e}s")
+
+# s = time.perf_counter()
+# r = quicksort(LISTA.copy())
+# e = time.perf_counter() - s
+# print(f"QuickSort: in {e}s")
