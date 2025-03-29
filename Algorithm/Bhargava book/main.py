@@ -77,6 +77,37 @@ def bfs_search2(graph, start_search, item_search):
                 if not subkey in invalid_keys:
                     fifo.append((subkey, degree + 1))
 
+def dijkstra(graph, start):
+    """I tried to make my own "dijkstra" algorithm but it ended like a bfs search with distance mapping
+    The main problem is that it will watse time because the order of searching is decided by the graph input,
+    and not about the shortest path first, but in the end works and it has the complexity of a bfs lol.
+    """
+
+    # Create a FIFO and visited blacklist set
+    fifo = deque([(start)])
+    visited = set([])
+    
+    # Create distance map with invalid dist.
+    distance = {node:float('inf') for node in graph}
+    distance[start] = 0
+
+    while len(fifo):
+        node = fifo.popleft()
+        visited.add(node)
+        curr_dist = distance[node]
+        for key, dist in graph[node]:
+            dist += curr_dist
+            # Test if current node was visited already
+            if key in visited:
+                pass
+            else:
+                fifo.append(key)
+                # Test if current declared distance is greater than new one
+                if distance[key] > dist:
+                    distance[key] = dist
+                else:
+                    pass
+    return distance
 
 def get_full_graph():
     d = {}
@@ -90,19 +121,41 @@ def get_full_graph():
     d["CLAIR"] = []
     d["JAIR"] = []
     return d
-GRAPH = get_full_graph()
 
-LISTA = [random.randint(0, 100) for _ in range(100000)]
+
+def get_full_graph_weight():
+    d = {}
+    d["YOU"] = [("ALICE", 1),("BOB", 10)]
+    d["ALICE"] = [("ANUJ", 4), ("PEGGY", 2), ("BOB", 1)]
+    d["BOB"] = [("TOM", 1), ("JON", 3)]
+    d["ANUJ"] = []
+    d["PEGGY"] = []
+    d["TOM"] = []
+    d["JON"] = [("CLAIR", 2), ("JAIR", 4)]
+    d["CLAIR"] = [("JAIR", 1)]
+    d["JAIR"] = []
+    return d
+
+GRAPH_W = get_full_graph_weight()
 
 s = time.perf_counter()
-r = bfs_search(GRAPH.copy(), "YOU", "JAIR")
+r = dijkstra(GRAPH_W.copy(), "YOU")
 e = time.perf_counter() - s
-print(f"Sort(BFS): in {e}s")
+print(f"Dijskra: in {e}s\n{r}")
 
-s = time.perf_counter()
-r = bfs_search2(GRAPH.copy(), "YOU", "JAIR")
-e = time.perf_counter() - s
-print(f"Sort(BFS): in {e}s")
+# GRAPH = get_full_graph()
+
+# s = time.perf_counter()
+# r = bfs_search(GRAPH.copy(), "YOU", "JAIR")
+# e = time.perf_counter() - s
+# print(f"BFS: in {e}s")
+
+# s = time.perf_counter()
+# r = bfs_search2(GRAPH.copy(), "YOU", "JAIR")
+# e = time.perf_counter() - s
+# print(f"BFS: in {e}s")
+
+# LISTA = [random.randint(0, 100) for _ in range(100000)]
 
 # s = time.perf_counter()
 # r = merge_sort(LISTA.copy())
