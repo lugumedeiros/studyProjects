@@ -3,6 +3,7 @@
 from collections import deque
 import random
 import time
+import heapq
 
 def quicksort(lst):
     if len(lst) <= 1:
@@ -78,7 +79,7 @@ def bfs_search2(graph, start_search, item_search):
                     fifo.append((subkey, degree + 1))
 
 def dijkstra(graph, start):
-    """I tried to make my own "dijkstra" algorithm but it ended like a bfs search with distance mapping
+    """I tried to make my own code for the dijkstra algorithm but it ended like a bfs search with distance mapping
     The main problem is that it will watse time because the order of searching is decided by the graph input,
     and not about the shortest path first, but in the end works and it has the complexity of a bfs lol.
     """
@@ -107,7 +108,64 @@ def dijkstra(graph, start):
                     distance[key] = dist
                 else:
                     pass
-    return distance
+    return distance  
+
+def dijkstra2(graph, start):
+    """ I never user heapq before, so this was my poor implementation of "correct" dijkstra, chapgpt is screaming tho...
+    In the end this was potentially slower than my bfs version.
+    """
+    def get_smaller_value(map, blacklist):
+        smll_v = float('inf')
+        smll_k = None
+        for key, value in map.items():
+            if not (key in blacklist) and (value < smll_v):
+                smll_v = value
+                smll_k = key
+        if smll_k == None:
+            pass
+        return smll_k
+
+    set_visited = set([]) # List with all searched nodes
+    map_dist = {node:float('inf') for node in graph} # List with the updated distances from start
+    map_dist[start] = 0
+
+    while len(set_visited) < len(map_dist):
+        node = get_smaller_value(map_dist, set_visited)
+        if node is None: break
+        set_visited.add(node)
+        current_dist = map_dist[node]
+
+        for sub_node, sub_dist in graph[node]:
+            sub_dist += current_dist
+            if sub_node in set_visited:
+                pass
+            else:
+                if sub_dist < map_dist[sub_node]:
+                    map_dist[sub_node] = sub_dist
+
+    return map_dist
+                
+def dijkstra3(graph, start):
+    """This is the correct python code for "dijksjktsra" i think... I used heapq this time, as adviced by chatgpt.
+    I'm speechless of how the bfs ish was faster than this, but I imagine this is the case due the low volume of items...
+    """
+    map_dist = {node:float('inf') for node in graph} # List with the updated distances from start
+    map_dist[start] = 0
+    to_visit = [(0, start)] # List with all searched nodes
+
+    while len(to_visit) > 0:
+        current_dist, node = heapq.heappop(to_visit)
+
+
+        for sub_node, sub_dist in graph[node]:
+            sub_dist += current_dist
+
+            if sub_dist < map_dist[sub_node]:
+                map_dist[sub_node] = sub_dist
+                heapq.heappush(to_visit, (sub_dist, sub_node))
+
+    return map_dist
+
 
 def get_full_graph():
     d = {}
@@ -136,12 +194,37 @@ def get_full_graph_weight():
     d["JAIR"] = []
     return d
 
-GRAPH_W = get_full_graph_weight()
+def get_node_dist_graph():
+    # Generate a large random graph with 1000 nodes
+    num_nodes = 50
+    graph_large = {f"N{i}": [] for i in range(num_nodes)}
+
+    for i in range(num_nodes):
+        num_edges = random.randint(2, 6)  # Each node connects to 2-6 other nodes
+        neighbors = random.sample(range(num_nodes), num_edges)  # Random neighbors
+
+        for neighbor in neighbors:
+            if neighbor != i:  # No self-loops
+                weight = random.randint(1, 100)  # Random weight (1-100)
+                graph_large[f"N{i}"].append((f"N{neighbor}", weight))
+    return graph_large
+
+GRAPH_W = get_node_dist_graph()
 
 s = time.perf_counter()
-r = dijkstra(GRAPH_W.copy(), "YOU")
+r = dijkstra(GRAPH_W.copy(), "N0")
 e = time.perf_counter() - s
-print(f"Dijskra: in {e}s\n{r}")
+print(f"Dijskra1: in {e}s\n{r}\n")
+
+s = time.perf_counter()
+r = dijkstra2(GRAPH_W.copy(), "N0")
+e = time.perf_counter() - s
+print(f"Dijskra2: in {e}s\n{r}\n")
+
+s = time.perf_counter()
+r = dijkstra3(GRAPH_W.copy(), "N0")
+e = time.perf_counter() - s
+print(f"Dijskra3: in {e}s\n{r}\n")
 
 # GRAPH = get_full_graph()
 
