@@ -5,6 +5,20 @@ import random
 import time
 import heapq
 
+def instersort(lst):
+    for i in range(len(lst)):
+        for j in range(i):
+            pointer = (i - j)
+            left = lst[pointer - 1]
+            right = lst[pointer]
+            if left > right:
+                lst[pointer] = left
+                lst[pointer - 1] = right
+            else:
+                break
+    
+    return lst
+
 def quicksort(lst):
     if len(lst) <= 1:
         return lst
@@ -146,16 +160,13 @@ def dijkstra2(graph, start):
     return map_dist
                 
 def dijkstra3(graph, start):
-    """This is the correct python code for "dijksjktsra" i think... I used heapq this time, as adviced by chatgpt.
-    I'm speechless of how the bfs ish was faster than this, but I imagine this is the case due the low volume of items...
-    """
-    map_dist = {node:float('inf') for node in graph} # List with the updated distances from start
+    """This is the correct python code for "dijksjktsra" i think... I used heapq this time, as adviced by chatgpt."""
+    map_dist = {node:float('inf') for node in graph}
     map_dist[start] = 0
-    to_visit = [(0, start)] # List with all searched nodes
+    to_visit = [(0, start)]
 
     while len(to_visit) > 0:
         current_dist, node = heapq.heappop(to_visit)
-
 
         for sub_node, sub_dist in graph[node]:
             sub_dist += current_dist
@@ -165,7 +176,6 @@ def dijkstra3(graph, start):
                 heapq.heappush(to_visit, (sub_dist, sub_node))
 
     return map_dist
-
 
 def get_full_graph():
     d = {}
@@ -179,7 +189,6 @@ def get_full_graph():
     d["CLAIR"] = []
     d["JAIR"] = []
     return d
-
 
 def get_full_graph_weight():
     d = {}
@@ -211,20 +220,20 @@ def get_node_dist_graph():
 
 GRAPH_W = get_node_dist_graph()
 
-s = time.perf_counter()
-r = dijkstra(GRAPH_W.copy(), "N0")
-e = time.perf_counter() - s
-print(f"Dijskra1: in {e}s\n{r}\n")
+# s = time.perf_counter()
+# r = dijkstra(GRAPH_W.copy(), "N0")
+# e = time.perf_counter() - s
+# print(f"Dijskra1: in {e}s\n{r}\n")
 
-s = time.perf_counter()
-r = dijkstra2(GRAPH_W.copy(), "N0")
-e = time.perf_counter() - s
-print(f"Dijskra2: in {e}s\n{r}\n")
+# s = time.perf_counter()
+# r = dijkstra2(GRAPH_W.copy(), "N0")
+# e = time.perf_counter() - s
+# print(f"Dijskra2: in {e}s\n{r}\n")
 
-s = time.perf_counter()
-r = dijkstra3(GRAPH_W.copy(), "N0")
-e = time.perf_counter() - s
-print(f"Dijskra3: in {e}s\n{r}\n")
+# s = time.perf_counter()
+# r = dijkstra3(GRAPH_W.copy(), "N0")
+# e = time.perf_counter() - s
+# print(f"Dijskra3: in {e}s\n{r}\n")
 
 # GRAPH = get_full_graph()
 
@@ -238,7 +247,12 @@ print(f"Dijskra3: in {e}s\n{r}\n")
 # e = time.perf_counter() - s
 # print(f"BFS: in {e}s")
 
-# LISTA = [random.randint(0, 100) for _ in range(100000)]
+LISTA = [random.randint(0, 10) for _ in range(10)]
+
+s = time.perf_counter()
+r = instersort(LISTA.copy())
+e = time.perf_counter() - s
+print(f"insertSort: in {e}s\nresult: {r}")
 
 # s = time.perf_counter()
 # r = merge_sort(LISTA.copy())
