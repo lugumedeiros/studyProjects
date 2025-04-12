@@ -53,7 +53,7 @@ class Sort:
         else:
             lst_a = lst[: lst_size//2]
             lst_b = lst[lst_size//2 :]
-            return sort(self.merge_sort(lst_a), self.merge_sort(lst_b))
+            return sort(Sort.merge_sort(lst_a), Sort.merge_sort(lst_b))
     
 class Search:
     @staticmethod
@@ -192,6 +192,44 @@ class Search:
             return Search.bin_search(lst[idx:], value)
         else:
             return Search.bin_search(lst[:idx], value)
+
+class Specific:
+    @staticmethod
+    def findCrossoverIndex(x, y, left=0, right=None):
+        """Binary Search algorithm to find an index in two lists in which the first
+        index has x>y and the second y>x"""
+        right = len(x) if right is None else right
+        mid = (right + left) // 2
+
+        if mid == len(x):
+            return None
+        
+        if x[mid] > y[mid]:
+            if x[mid+1] < y[mid+1]:
+                return mid
+            else:
+                return Specific.findCrossoverIndex(x, y, left=mid+1, right=right)
+        else:
+            return Specific.findCrossoverIndex(x, y, left=left, right=mid-1)
+        
+    def integerCubeRoot(n, left=0, right=None):
+        """Binary search algorithm to find the integer cube root of positive value given"""
+        if n <= 1:
+            return n
+        
+        cube = lambda x: x*x*x
+        right = n-1 if right is None else right
+        mid = (left + right)//2
+        
+        if cube(mid) == n:
+            return mid
+        elif cube(mid) < n:
+            if cube(mid+1) > n:
+                return mid
+            else:
+                return Specific.integerCubeRoot(n, mid+1, right)
+        else:
+            return Specific.integerCubeRoot(n, left, mid-1)
 
 def get_full_graph():
     d = {}
