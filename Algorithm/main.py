@@ -231,6 +231,104 @@ class Specific:
         else:
             return Specific.integerCubeRoot(n, left, mid-1)
 
+class MaxHeap:
+    def __init__(self, array):
+        self.heap = array
+        self.heapfy()
+
+    def _swap(self, x, y, array):
+        """Swap 2 idx from array"""
+        assert x <= len(array) and y <= len(array)
+        
+        temp_x = array[x]
+        array[x] = array[y]
+        array[y] = temp_x
+        return array
+
+    def _get_children(self, idx, array):
+        """get quantity of children if any at all"""
+        array_max = len(array) - 1
+        l_child_idx = ((idx + 1)* 2) - 1
+        if l_child_idx > array_max:
+            return False
+        elif l_child_idx == array_max:
+            return 1
+        else:
+            return 2
+        
+    def _bubble_down(self, idx, array):
+        l_child = lambda x: ((x + 1) * 2) - 1
+
+        has_child = self._get_children(idx, array)
+
+        if not has_child:   # Has no children
+            return array
+        elif has_child == 1:    # Has only left child
+            small_c = l_child(idx)
+        else:   # Has 2 children
+            left_c = l_child(idx)
+            rigth_c = left_c + 1
+            small_c = left_c if array[left_c] > array[rigth_c] else rigth_c
+        
+        if array[idx] < array[small_c]: # Test if smaller children must swap with parent
+            array = self._swap(idx, small_c, array)
+            return self._bubble_down(small_c, array)
+        else:
+            return array
+        
+    def _bubble_up(self,idx, array):
+        if idx <= 0:
+            return array
+        
+        parent = ((idx + 1) // 2) - 1
+        
+        if array[parent] < array[idx]:
+            array = self._swap(parent, idx, array)
+            return self._bubble_up(parent, array)
+        else:
+            return array
+
+    def heapfy(self):
+        heap_len = (len(self.heap) // 2) -1
+        for i in range(heap_len, -1, -1):
+            self.heap = self._bubble_down(i, self.heap)
+    
+    def heapsort(self):
+        self.heapfy()
+        total_len = len(self.heap)
+
+        for i in range((total_len-1), -1, -1):
+            self.heap = self._swap(0, i, self.heap)
+            self.heap = self._bubble_down(0, self.heap[:i]) + self.heap[i:]
+
+        for i in range(total_len // 2):
+            compl = (total_len - i) - 1
+            self.heap = self._swap(i, compl, self.heap)
+
+    def insert(self, value):
+        self.heap.append(value)
+        pos = len(self.heap) - 1
+        self.heap = self._bubble_up(pos, self.heap)
+    
+    def delete(self, idx):
+        last_pos = len(self.heap) - 1
+        self.heap = self._swap(idx, last_pos, self.heap)
+        self.heap = self.heap[:last_pos]
+
+        parent = ((idx + 1) // 2) - 1
+        if idx == 0:
+            return self._bubble_down(idx, self.heap)
+        elif self.heap[parent] < self.heap[idx]:
+            return self._bubble_down(idx, self.heap)
+        elif self.heap[parent] > self.heap[idx]:
+            return self._bubble_up(idx, self.heap)
+        else: return
+    
+    def pop(self):
+        value = self.heap[0]
+        self.delete(0)
+        return value
+
 class MinHeap:
     def __init__(self, array):
         self.heap = array
@@ -313,7 +411,7 @@ class MinHeap:
     def delete(self, idx):
         last_pos = len(self.heap) - 1
         self.heap = self._swap(idx, last_pos, self.heap)
-        self.heap = self.heap[:last_pos - 1]
+        self.heap = self.heap[:last_pos]
 
         parent = ((idx + 1) // 2) - 1
         if idx == 0:
@@ -372,14 +470,19 @@ def get_node_dist_graph():
     return graph_large
 
 # GRAPH_W = get_node_dist_graph()
-LISTA = [random.randint(0, 10) for _ in range(100)]
+LISTA = [random.randint(0, 10) for _ in range(10)]
 
 
 s = time.perf_counter()
-heap = Heap(LISTA.copy())
-heap.heapsort()
-for i in range(20):
-    heap.delete(i*2)
-r = heap.heap
+minheap = MinHeap(LISTA.copy())
+minheap.heapsort()
+r = minheap.heap
+e = time.perf_counter() - s
+print(f"BFS: in {e}s\nResult: {r}")
+
+s = time.perf_counter()
+maxheap = MaxHeap(LISTA.copy())
+maxheap.heapsort()
+r = maxheap.heap
 e = time.perf_counter() - s
 print(f"BFS: in {e}s\nResult: {r}")
