@@ -440,10 +440,11 @@ class Heap:
             return value
 
     class MedianHeap:
-        def __init__(self, array):
+        def __init__(self, array=None):
+            array = [] if array is None else array
             self.min_heap = Heap.Min_heap(array)
             self.max_heap = Heap.Max_heap([])
-            self._ort_and_split()
+            self._sort_and_split()
 
         def _sort_and_split(self):
             unsorted_arr = self.max_heap.heap + self.min_heap.heap
@@ -457,14 +458,15 @@ class Heap:
             self.max_heap.heapfy()
 
         def peek(self):
-            return self.max_heap.heap[0]
+            if len(self.max_heap.heap) - len(self.min_heap.heap) == 0:
+                return (self.max_heap.heap[0] + self.min_heap.heap[0]) / 2
+            else:
+                return self.max_heap.heap[0]
         
         def insert(self, value):
-            self.min_heap.insert(value)
+            self.max_heap.insert(value)
             self._sort_and_split()
 
-
-            
 
 def get_full_graph():
     d = {}
@@ -508,7 +510,7 @@ def get_node_dist_graph():
     return graph_large
 
 # GRAPH_W = get_node_dist_graph()
-LISTA = [random.randint(0, 30) for _ in range(10)]
+LISTA = [random.randint(0, 30) for _ in range(11)]
 
 s = time.perf_counter()
 r = Heap.MedianHeap(LISTA.copy())
