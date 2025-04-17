@@ -8,6 +8,7 @@ import heapq
 class Sort:
     @staticmethod
     def insertsort(lst):
+        """O(n) Ω(n^2) avr(n^2), Space Θ(1), No recursion"""
         for i in range(len(lst)):
             for j in range(i):
                 pointer = (i - j)
@@ -22,6 +23,7 @@ class Sort:
         return lst
 
     def quicksort(lst):
+        """O(nlogn) Ω(n^2) avr(nlogn), Space Θ(n), Has recursion"""
         if len(lst) <= 1:
             return lst
         else:
@@ -32,6 +34,7 @@ class Sort:
             return Sort.quicksort(less) + equal + Sort.quicksort(more)
 
     def merge_sort(lst):
+        """Θ(nlogn), Space Θ(n), Has recursion"""
         def sort(lst_a, lst_b):
             new_lst = []
             while len(lst_a) >= 1 and len(lst_b) >= 1:
@@ -54,6 +57,12 @@ class Sort:
             lst_a = lst[: lst_size//2]
             lst_b = lst[lst_size//2 :]
             return sort(Sort.merge_sort(lst_a), Sort.merge_sort(lst_b))
+        
+    def heap_sort(array):
+        """Θ(nlogn), Space Θ(1), Has recursion"""
+        heap = Heap.Min_heap(array)
+        heap.heapsort()
+        return heap.heap
     
 class Search:
     @staticmethod
@@ -231,202 +240,231 @@ class Specific:
         else:
             return Specific.integerCubeRoot(n, left, mid-1)
 
-class MaxHeap:
-    def __init__(self, array):
-        self.heap = array
-        self.heapfy()
+class Heap:
+    @staticmethod
 
-    def _swap(self, x, y, array):
-        """Swap 2 idx from array"""
-        assert x <= len(array) and y <= len(array)
-        
-        temp_x = array[x]
-        array[x] = array[y]
-        array[y] = temp_x
-        return array
+    class Max_heap:
+        def __init__(self, array):
+            self.heap = array
+            self.heapfy()
 
-    def _get_children(self, idx, array):
-        """get quantity of children if any at all"""
-        array_max = len(array) - 1
-        l_child_idx = ((idx + 1)* 2) - 1
-        if l_child_idx > array_max:
-            return False
-        elif l_child_idx == array_max:
-            return 1
-        else:
-            return 2
-        
-    def _bubble_down(self, idx, array):
-        l_child = lambda x: ((x + 1) * 2) - 1
-
-        has_child = self._get_children(idx, array)
-
-        if not has_child:   # Has no children
-            return array
-        elif has_child == 1:    # Has only left child
-            small_c = l_child(idx)
-        else:   # Has 2 children
-            left_c = l_child(idx)
-            rigth_c = left_c + 1
-            small_c = left_c if array[left_c] > array[rigth_c] else rigth_c
-        
-        if array[idx] < array[small_c]: # Test if smaller children must swap with parent
-            array = self._swap(idx, small_c, array)
-            return self._bubble_down(small_c, array)
-        else:
-            return array
-        
-    def _bubble_up(self,idx, array):
-        if idx <= 0:
-            return array
-        
-        parent = ((idx + 1) // 2) - 1
-        
-        if array[parent] < array[idx]:
-            array = self._swap(parent, idx, array)
-            return self._bubble_up(parent, array)
-        else:
+        def _swap(self, x, y, array):
+            """Swap 2 idx from array"""
+            assert x <= len(array) and y <= len(array)
+            
+            temp_x = array[x]
+            array[x] = array[y]
+            array[y] = temp_x
             return array
 
-    def heapfy(self):
-        heap_len = (len(self.heap) // 2) -1
-        for i in range(heap_len, -1, -1):
-            self.heap = self._bubble_down(i, self.heap)
-    
-    def heapsort(self):
-        self.heapfy()
-        total_len = len(self.heap)
+        def _get_children(self, idx, array):
+            """get quantity of children if any at all"""
+            array_max = len(array) - 1
+            l_child_idx = ((idx + 1)* 2) - 1
+            if l_child_idx > array_max:
+                return False
+            elif l_child_idx == array_max:
+                return 1
+            else:
+                return 2
+            
+        def _bubble_down(self, idx, array):
+            l_child = lambda x: ((x + 1) * 2) - 1
 
-        for i in range((total_len-1), -1, -1):
-            self.heap = self._swap(0, i, self.heap)
-            self.heap = self._bubble_down(0, self.heap[:i]) + self.heap[i:]
+            has_child = self._get_children(idx, array)
 
-        for i in range(total_len // 2):
-            compl = (total_len - i) - 1
-            self.heap = self._swap(i, compl, self.heap)
+            if not has_child:   # Has no children
+                return array
+            elif has_child == 1:    # Has only left child
+                small_c = l_child(idx)
+            else:   # Has 2 children
+                left_c = l_child(idx)
+                rigth_c = left_c + 1
+                small_c = left_c if array[left_c] > array[rigth_c] else rigth_c
+            
+            if array[idx] < array[small_c]: # Test if smaller children must swap with parent
+                array = self._swap(idx, small_c, array)
+                return self._bubble_down(small_c, array)
+            else:
+                return array
+            
+        def _bubble_up(self,idx, array):
+            if idx <= 0:
+                return array
+            
+            parent = ((idx + 1) // 2) - 1
+            
+            if array[parent] < array[idx]:
+                array = self._swap(parent, idx, array)
+                return self._bubble_up(parent, array)
+            else:
+                return array
 
-    def insert(self, value):
-        self.heap.append(value)
-        pos = len(self.heap) - 1
-        self.heap = self._bubble_up(pos, self.heap)
-    
-    def delete(self, idx):
-        last_pos = len(self.heap) - 1
-        self.heap = self._swap(idx, last_pos, self.heap)
-        self.heap = self.heap[:last_pos]
-
-        parent = ((idx + 1) // 2) - 1
-        if idx == 0:
-            return self._bubble_down(idx, self.heap)
-        elif self.heap[parent] < self.heap[idx]:
-            return self._bubble_down(idx, self.heap)
-        elif self.heap[parent] > self.heap[idx]:
-            return self._bubble_up(idx, self.heap)
-        else: return
-    
-    def pop(self):
-        value = self.heap[0]
-        self.delete(0)
-        return value
-
-class MinHeap:
-    def __init__(self, array):
-        self.heap = array
-        self.heapfy()
-
-    def _swap(self, x, y, array):
-        """Swap 2 idx from array"""
-        assert x <= len(array) and y <= len(array)
+        def heapfy(self):
+            heap_len = (len(self.heap) // 2) -1
+            for i in range(heap_len, -1, -1):
+                self.heap = self._bubble_down(i, self.heap)
         
-        temp_x = array[x]
-        array[x] = array[y]
-        array[y] = temp_x
-        return array
+        def heapsort(self):
+            self.heapfy()
+            total_len = len(self.heap)
 
-    def _get_children(self, idx, array):
-        """get quantity of children if any at all"""
-        array_max = len(array) - 1
-        l_child_idx = ((idx + 1)* 2) - 1
-        if l_child_idx > array_max:
-            return False
-        elif l_child_idx == array_max:
-            return 1
-        else:
-            return 2
+            for i in range((total_len-1), -1, -1):
+                self.heap = self._swap(0, i, self.heap)
+                self.heap = self._bubble_down(0, self.heap[:i]) + self.heap[i:]
+
+            for i in range(total_len // 2):
+                compl = (total_len - i) - 1
+                self.heap = self._swap(i, compl, self.heap)
+
+        def insert(self, value):
+            self.heap.append(value)
+            pos = len(self.heap) - 1
+            self.heap = self._bubble_up(pos, self.heap)
         
-    def _bubble_down(self, idx, array):
-        l_child = lambda x: ((x + 1) * 2) - 1
+        def delete(self, idx):
+            last_pos = len(self.heap) - 1
+            self.heap = self._swap(idx, last_pos, self.heap)
+            self.heap = self.heap[:last_pos]
 
-        has_child = self._get_children(idx, array)
+            parent = ((idx + 1) // 2) - 1
+            if idx == 0:
+                return self._bubble_down(idx, self.heap)
+            elif self.heap[parent] < self.heap[idx]:
+                return self._bubble_down(idx, self.heap)
+            elif self.heap[parent] > self.heap[idx]:
+                return self._bubble_up(idx, self.heap)
+            else: return
+        
+        def pop(self):
+            value = self.heap[0]
+            self.delete(0)
+            return value
 
-        if not has_child:   # Has no children
+    class Min_heap:
+        def __init__(self, array):
+            self.heap = array
+            self.heapfy()
+
+        def _swap(self, x, y, array):
+            """Swap 2 idx from array"""
+            assert x <= len(array) and y <= len(array)
+            
+            temp_x = array[x]
+            array[x] = array[y]
+            array[y] = temp_x
             return array
-        elif has_child == 1:    # Has only left child
-            small_c = l_child(idx)
-        else:   # Has 2 children
-            left_c = l_child(idx)
-            rigth_c = left_c + 1
-            small_c = left_c if array[left_c] < array[rigth_c] else rigth_c
+
+        def _get_children(self, idx, array):
+            """get quantity of children if any at all"""
+            array_max = len(array) - 1
+            l_child_idx = ((idx + 1)* 2) - 1
+            if l_child_idx > array_max:
+                return False
+            elif l_child_idx == array_max:
+                return 1
+            else:
+                return 2
+            
+        def _bubble_down(self, idx, array):
+            l_child = lambda x: ((x + 1) * 2) - 1
+
+            has_child = self._get_children(idx, array)
+
+            if not has_child:   # Has no children
+                return array
+            elif has_child == 1:    # Has only left child
+                small_c = l_child(idx)
+            else:   # Has 2 children
+                left_c = l_child(idx)
+                rigth_c = left_c + 1
+                small_c = left_c if array[left_c] < array[rigth_c] else rigth_c
+            
+            if array[idx] > array[small_c]: # Test if smaller children must swap with parent
+                array = self._swap(idx, small_c, array)
+                return self._bubble_down(small_c, array)
+            else:
+                return array
+            
+        def _bubble_up(self,idx, array):
+            if idx <= 0:
+                return array
+            
+            parent = ((idx + 1) // 2) - 1
+            
+            if array[parent] > array[idx]:
+                array = self._swap(parent, idx, array)
+                return self._bubble_up(parent, array)
+            else:
+                return array
+
+        def heapfy(self):
+            heap_len = (len(self.heap) // 2) -1
+            for i in range(heap_len, -1, -1):
+                self.heap = self._bubble_down(i, self.heap)
         
-        if array[idx] > array[small_c]: # Test if smaller children must swap with parent
-            array = self._swap(idx, small_c, array)
-            return self._bubble_down(small_c, array)
-        else:
-            return array
+        def heapsort(self):
+            self.heapfy()
+            total_len = len(self.heap)
+
+            for i in range((total_len-1), -1, -1):
+                self.heap = self._swap(0, i, self.heap)
+                self.heap = self._bubble_down(0, self.heap[:i]) + self.heap[i:]
+
+            for i in range(total_len // 2):
+                compl = (total_len - i) - 1
+                self.heap = self._swap(i, compl, self.heap)
+
+        def insert(self, value):
+            self.heap.append(value)
+            pos = len(self.heap) - 1
+            self.heap = self._bubble_up(pos, self.heap)
         
-    def _bubble_up(self,idx, array):
-        if idx <= 0:
-            return array
+        def delete(self, idx):
+            last_pos = len(self.heap) - 1
+            self.heap = self._swap(idx, last_pos, self.heap)
+            self.heap = self.heap[:last_pos]
+
+            parent = ((idx + 1) // 2) - 1
+            if idx == 0:
+                return self._bubble_down(idx, self.heap)
+            elif self.heap[parent] < self.heap[idx]:
+                return self._bubble_down(idx, self.heap)
+            elif self.heap[parent] > self.heap[idx]:
+                return self._bubble_up(idx, self.heap)
+            else: return
         
-        parent = ((idx + 1) // 2) - 1
+        def pop(self):
+            value = self.heap[0]
+            self.delete(0)
+            return value
+
+    class MedianHeap:
+        def __init__(self, array):
+            self.min_heap = Heap.Min_heap(array)
+            self.max_heap = Heap.Max_heap([])
+            self._ort_and_split()
+
+        def _sort_and_split(self):
+            unsorted_arr = self.max_heap.heap + self.min_heap.heap
+            sorting_heap = Heap.Min_heap(unsorted_arr)
+            sorting_heap.heapsort()
+            sorted_arr = sorting_heap.heap
+
+            half_arr = -(len(sorted_arr) // -2)
+            self.max_heap.heap = sorted_arr[:half_arr]
+            self.min_heap.heap = sorted_arr[half_arr:]
+            self.max_heap.heapfy()
+
+        def peek(self):
+            return self.max_heap.heap[0]
         
-        if array[parent] > array[idx]:
-            array = self._swap(parent, idx, array)
-            return self._bubble_up(parent, array)
-        else:
-            return array
+        def insert(self, value):
+            self.min_heap.insert(value)
+            self._sort_and_split()
 
-    def heapfy(self):
-        heap_len = (len(self.heap) // 2) -1
-        for i in range(heap_len, -1, -1):
-            self.heap = self._bubble_down(i, self.heap)
-    
-    def heapsort(self):
-        self.heapfy()
-        total_len = len(self.heap)
 
-        for i in range((total_len-1), -1, -1):
-            self.heap = self._swap(0, i, self.heap)
-            self.heap = self._bubble_down(0, self.heap[:i]) + self.heap[i:]
-
-        for i in range(total_len // 2):
-            compl = (total_len - i) - 1
-            self.heap = self._swap(i, compl, self.heap)
-
-    def insert(self, value):
-        self.heap.append(value)
-        pos = len(self.heap) - 1
-        self.heap = self._bubble_up(pos, self.heap)
-    
-    def delete(self, idx):
-        last_pos = len(self.heap) - 1
-        self.heap = self._swap(idx, last_pos, self.heap)
-        self.heap = self.heap[:last_pos]
-
-        parent = ((idx + 1) // 2) - 1
-        if idx == 0:
-            return self._bubble_down(idx, self.heap)
-        elif self.heap[parent] < self.heap[idx]:
-            return self._bubble_down(idx, self.heap)
-        elif self.heap[parent] > self.heap[idx]:
-            return self._bubble_up(idx, self.heap)
-        else: return
-    
-    def pop(self):
-        value = self.heap[0]
-        self.delete(0)
-        return value
-
+            
 
 def get_full_graph():
     d = {}
@@ -470,19 +508,12 @@ def get_node_dist_graph():
     return graph_large
 
 # GRAPH_W = get_node_dist_graph()
-LISTA = [random.randint(0, 10) for _ in range(10)]
-
-
-s = time.perf_counter()
-minheap = MinHeap(LISTA.copy())
-minheap.heapsort()
-r = minheap.heap
-e = time.perf_counter() - s
-print(f"BFS: in {e}s\nResult: {r}")
+LISTA = [random.randint(0, 30) for _ in range(10)]
 
 s = time.perf_counter()
-maxheap = MaxHeap(LISTA.copy())
-maxheap.heapsort()
-r = maxheap.heap
+r = Heap.MedianHeap(LISTA.copy())
 e = time.perf_counter() - s
-print(f"BFS: in {e}s\nResult: {r}")
+print(f"{r.peek()}\nResult: {e}\n")
+
+print(r.max_heap.heap)
+print(r.min_heap.heap)
