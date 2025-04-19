@@ -8,7 +8,7 @@ import heapq
 class Sort:
     @staticmethod
     def insertsort(lst):
-        """O(n) Ω(n^2) avr(n^2), Space Θ(1), No recursion"""
+        """O(n) Ω(n^2) avr(n^2), No recursion"""
         for i in range(len(lst)):
             for j in range(i):
                 pointer = (i - j)
@@ -22,19 +22,39 @@ class Sort:
         
         return lst
 
-    def quicksort(lst):
-        """O(nlogn) Ω(n^2) avr(nlogn), Space Θ(n), Has recursion"""
-        if len(lst) <= 1:
+    def quicksort(lst, start=None, end=None):
+        """O(nlogn) Ω(n^2) avr(nlogn), Has recursion"""
+        def _swap(x, y, lst):
+            temp = lst[x]
+            lst[x] = lst[y]
+            lst[y] = temp
             return lst
+
+        if start is None or end is None:
+            start = 0
+            end = len(lst)-1
+
+        if (end - start) < 2:
+            return lst[start:end+1]
+        
         else:
-            pivot = lst[len(lst) // 2]
-            less = [x for x in lst if x < pivot]
-            equal = [x for x in lst if x == pivot]
-            more = [x for x in lst if x > pivot]
-            return Sort.quicksort(less) + equal + Sort.quicksort(more)
+            pivot = lst[end]
+            i = start - 1
+            j = i + 1
+            while j < end:
+                if lst[j] < pivot:
+                    i += 1
+                    _swap(i, j, lst)
+                    j += 1
+                else:
+                    j += 1
+            left_arr = Sort.quicksort(lst, start, i)
+            right_arr = Sort.quicksort(lst, i+1, end-1)
+            return left_arr + [pivot] + right_arr
+
 
     def merge_sort(lst):
-        """Θ(nlogn), Space Θ(n), Has recursion"""
+        """Θ(nlogn), Has recursion"""
         def sort(lst_a, lst_b):
             new_lst = []
             while len(lst_a) >= 1 and len(lst_b) >= 1:
@@ -467,7 +487,6 @@ class Heap:
             self.max_heap.insert(value)
             self._sort_and_split()
 
-
 def get_full_graph():
     d = {}
     d["YOU"] = ["ALICE","BOB"]
@@ -510,12 +529,9 @@ def get_node_dist_graph():
     return graph_large
 
 # GRAPH_W = get_node_dist_graph()
-LISTA = [random.randint(0, 30) for _ in range(11)]
+LISTA = [random.randint(0, 10) for _ in range(100)]
 
 s = time.perf_counter()
-r = Heap.MedianHeap(LISTA.copy())
+r = Sort.quicksort(LISTA.copy())
 e = time.perf_counter() - s
-print(f"{r.peek()}\nResult: {e}\n")
-
-print(r.max_heap.heap)
-print(r.min_heap.heap)
+print(f"{r}\nResult: {e}\n")
