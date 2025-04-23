@@ -7,8 +7,15 @@ import heapq
 
 class Sort:
     @staticmethod
+
+    def _swap(x, y, lst):
+            temp = lst[x]
+            lst[x] = lst[y]
+            lst[y] = temp
+            return lst
+
     def insertsort(lst):
-        """O(n) Ω(n^2) avr(n^2), No recursion"""
+        """Ω(n) O(n^2) avr(n^2), No recursion"""
         for i in range(len(lst)):
             for j in range(i):
                 pointer = (i - j)
@@ -22,35 +29,47 @@ class Sort:
         
         return lst
 
-    def quicksort(lst, start=None, end=None):
-        """O(nlogn) Ω(n^2) avr(nlogn), Has recursion"""
-        def _swap(x, y, lst):
-            temp = lst[x]
-            lst[x] = lst[y]
-            lst[y] = temp
+    def quicksort(lst):
+        """O(nlogn) Ω(n^2) avr(nlogn), Space Θ(n), Has recursion"""
+        if len(lst) <= 1:
+            return lst
+        else:
+            pivot = lst[len(lst) // 2]
+        less = [x for x in lst if x < pivot]
+        equal = [x for x in lst if x == pivot]
+        more = [x for x in lst if x > pivot]
+        return Sort.quicksort(less) + equal + Sort.quicksort(more)
+    
+    def better_quicksort(lst, origin=None, end=None):
+        if origin is None or end is None:
+            origin = 0
+            end = len(lst)
+        
+        if end - origin <= 1:
+            return lst
+        if end - origin == 2:
+            if lst[origin] > lst[end-1]:
+                Sort._swap(origin, end-1, lst)
             return lst
 
-        if start is None or end is None:
-            start = 0
-            end = len(lst)-1
+        # Select random index and swap pivot to origin
+        random_index = random.randrange(origin, end)
+        Sort._swap(random_index, origin, lst)
+        pivot = lst[origin]
 
-        if (end - start) < 2:
-            return lst[start:end+1]
-        
-        else:
-            pivot = lst[end]
-            i = start - 1
-            j = i + 1
-            while j < end:
-                if lst[j] < pivot:
-                    i += 1
-                    _swap(i, j, lst)
-                    j += 1
-                else:
-                    j += 1
-            left_arr = Sort.quicksort(lst, start, i)
-            right_arr = Sort.quicksort(lst, i+1, end-1)
-            return left_arr + [pivot] + right_arr
+        greater = origin+1 # index to first greater value to be swaped
+        for i in range(origin+1, end):
+            if lst[i] <= pivot:
+                Sort._swap(i, greater, lst)
+                greater += 1
+        Sort._swap(greater-1, origin, lst)
+
+        if greater - 1 > origin:
+            lst = Sort.better_quicksort(lst, origin, greater-1)
+        if end - greater > 0:
+            lst = Sort.better_quicksort(lst, greater, end)
+        return lst
+
 
 
     def merge_sort(lst):
@@ -86,6 +105,12 @@ class Sort:
     
 class Search:
     @staticmethod
+    def _swap(x, y, lst):
+            temp = lst[x]
+            lst[x] = lst[y]
+            lst[y] = temp
+            return lst
+
     def bfs_search_bad(graph, start_search, item_search):
         # Tried to do my own just from concepts, not so bad I think
         invalid_graph = []
@@ -221,6 +246,30 @@ class Search:
             return Search.bin_search(lst[idx:], value)
         else:
             return Search.bin_search(lst[:idx], value)
+
+    def quick_selection(lst, position):
+        random_idx = random.randrange(0, len(lst))
+        random_idx=0
+        pivot = lst[random_idx]
+        Search._swap(random_idx, len(lst)-1, lst)
+
+        left = []
+        right = []
+        for i in range(len(lst) - 1):
+            if lst[i] <= pivot:
+                left.append(lst[i])
+            elif lst[i] > pivot:
+                right.append(lst[i])
+
+        if len(left)-1 == position:
+            return left[len(left)-1]
+        
+        elif len(left)-1 > position:
+            return Search.quick_selection(left, position)
+
+        else:
+            new_pos = position - (1 + len(left))
+            return Search.quick_selection(right, new_pos)
 
 class Specific:
     @staticmethod
@@ -529,9 +578,11 @@ def get_node_dist_graph():
     return graph_large
 
 # GRAPH_W = get_node_dist_graph()
-LISTA = [random.randint(0, 10) for _ in range(100)]
+LISTA = [random.randint(0, 20) for _ in range(10)]
+# LISTA = [10, 5, 14, 12, 13, 16, 16, 17, 0, 0]
 
+print(Sort.quicksort(LISTA.copy()))
 s = time.perf_counter()
-r = Sort.quicksort(LISTA.copy())
+r = Sort.better_quicksort(LISTA.copy())
 e = time.perf_counter() - s
 print(f"{r}\nResult: {e}\n")
