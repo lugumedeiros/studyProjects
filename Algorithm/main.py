@@ -9,10 +9,7 @@ class Sort:
     @staticmethod
 
     def _swap(x, y, lst):
-            temp = lst[x]
-            lst[x] = lst[y]
-            lst[y] = temp
-            return lst
+            lst[x], lst[y] = lst[y], lst[x]
 
     def insertsort(lst):
         """Ω(n) O(n^2) avr(n^2), No recursion"""
@@ -30,7 +27,7 @@ class Sort:
         return lst
 
     def quicksort(lst):
-        """O(nlogn) Ω(n^2) avr(nlogn), Space Θ(n), Has recursion"""
+        """O(nlogn) Ω(n^2) avr(nlogn), Space Θ(nlogn), Has recursion"""
         if len(lst) <= 1:
             return lst
         else:
@@ -41,15 +38,12 @@ class Sort:
         return Sort.quicksort(less) + equal + Sort.quicksort(more)
     
     def better_quicksort(lst, origin=None, end=None):
+        """It's worse in python bruh"""
         if origin is None or end is None:
             origin = 0
             end = len(lst)
         
         if end - origin <= 1:
-            return lst
-        if end - origin == 2:
-            if lst[origin] > lst[end-1]:
-                Sort._swap(origin, end-1, lst)
             return lst
 
         # Select random index and swap pivot to origin
@@ -65,12 +59,10 @@ class Sort:
         Sort._swap(greater-1, origin, lst)
 
         if greater - 1 > origin:
-            lst = Sort.better_quicksort(lst, origin, greater-1)
+            Sort.better_quicksort(lst, origin, greater-1)
         if end - greater > 0:
-            lst = Sort.better_quicksort(lst, greater, end)
+            Sort.better_quicksort(lst, greater, end)
         return lst
-
-
 
     def merge_sort(lst):
         """Θ(nlogn), Has recursion"""
@@ -578,11 +570,15 @@ def get_node_dist_graph():
     return graph_large
 
 # GRAPH_W = get_node_dist_graph()
-LISTA = [random.randint(0, 20) for _ in range(10)]
+LISTA = [random.randint(0, 10) for _ in range(100)]
 # LISTA = [10, 5, 14, 12, 13, 16, 16, 17, 0, 0]
 
-print(Sort.quicksort(LISTA.copy()))
+s = time.perf_counter()
+r = Sort.quicksort(LISTA.copy())
+e = time.perf_counter() - s
+print(f"\nResult: {e}\n")
+
 s = time.perf_counter()
 r = Sort.better_quicksort(LISTA.copy())
 e = time.perf_counter() - s
-print(f"{r}\nResult: {e}\n")
+print(f"\nResult: {e}\n")
