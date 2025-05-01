@@ -528,6 +528,190 @@ class Heap:
             self.max_heap.insert(value)
             self._sort_and_split()
 
+class Hash:
+    class CountMinSketch():
+        # Count Min with 3 terrible hash funtions...
+        def __init__(self, size_hash):
+            self.counters = [[0]*size_hash for _ in range(3)]
+            self.size_hash = size_hash
+
+        def insert(self, number):
+            key_1, key_2, key_3 = self._get_keys(number)
+            self.counters[0][key_1] += 1
+            self.counters[1][key_2] += 1
+            self.counters[2][key_3] += 1
+
+        def check(self, number):
+            key_1, key_2, key_3 = self._get_keys(number)
+            arr_1 = self.counters[0][key_1]
+            arr_2 = self.counters[1][key_2]
+            arr_3 = self.counters[2][key_3]
+            return min(arr_1, arr_2, arr_3)
+            
+        def _get_keys(self, number):
+            key_1 = (number * number * 9) % self.size_hash
+            key_2 = ((number * number) + (number * 3)) % self.size_hash
+            key_3 = (number * 13) % self.size_hash
+            return (key_1, key_2, key_3)
+    
+    # Simple int hash just to test what I learned, with terrible hashFunctions
+    # Didn't want to use sets, just normal arrays
+    def __init__(self, hash_size, hashf_lst=None):
+        if hashf_lst is None:
+            self.hash_function = self.bad_hash_func
+
+        self.hash = [None]*hash_size
+        self.hash_size = hash_size
+
+        self.count_min_sketch = self.CountMinSketch(hash_size)
+
+    def insert(self, number):
+        self.count_min_sketch.insert(number)
+        
+        key = self.hash_function(number) % self.hash_size
+        
+        # Test if key is empty
+        if self.hash[key] is None:
+            self.hash[key] = [number]
+            return
+        # test if number in key
+        for value in self.hash[key]:
+            if value == number:
+                return
+        # Add number to end of list
+        self.hash[key].append(number)
+
+    def delete(self, number):
+        key = self.hash_function(number) % self.hash_size
+
+        # Doesn't exist
+        if self.hash[key] is None:
+            return
+        
+        for idx, value in enumerate(self.hash[key]):
+            # Try to find in array
+            if value == number:
+                self.hash[key].pop(idx)
+                # Make it None if empty
+                if len(self.hash[key]) == 0:
+                    self.hash[key] = None
+
+    def check_count(self, number):
+        return self.count_min_sketch.check(number)
+
+    # Terrible :D
+    def bad_hash_func(self, number):
+        return (3 * number * number) + (number * 9)
+
+class BinarySearchTree:
+    def __init__(self, root=None):
+        self.root = root
+        self.left = None
+        self.right = None
+
+    def get_left(self):
+        return self.root if self.left is None else self.left.get_left()
+    
+    def get_right(self):
+        return self.root if self.right is None else self.right.get_right()
+    
+    def get_root(self):
+        return self.root
+    
+    def insert(self, value):
+        # Root is empty and will accept new value
+        if self.root is None:
+            self.root = value
+            return
+        
+        # Create or insert value into child
+        if value <= self.root:
+            if self.left is None:
+                self.left = BinarySearchTree(value)
+            else:
+                self.left.insert(value)
+        else:
+            if self.right is None:
+                self.right = BinarySearchTree(value)
+            else:
+                self.right.insert(value)
+
+    def height(self):
+        return max(self._get_left_height(), self._get_right_height())
+    
+    def _get_left_height(self):
+        return 1 if self.left is None else self.left._get_left_height() + 1
+    
+    def _get_right_height(self):
+        return 1 if self.right is None else self.right._get_right_height() + 1
+    
+    def delete(self, value):
+        node_pointer = self._find_node(value)
+        direction = "left" if value <= self.root else "right"
+
+        # Simple swap
+        if node_pointer.left is None and node_pointer.right is None:
+            node_pointer = None
+            return
+        if direction == "left":
+            if node_pointer.right is None:
+                node_pointer = node_pointer.left
+                return
+        if direction == "right":
+            if node_pointer.left is None:
+                node_pointer = node_pointer.right
+                return
+        
+        # Complex Swap
+        if direction == "left":
+            min_node = node_pointer.left._go_furthest("right")
+            node_pointer.root = min_node.root
+            min_node.root = None
+
+        else:
+            max_node = node_pointer.right._go_furthest("left")
+            node_pointer.root = max_node.root
+            max_node.root = None        
+
+    def _find_node(self, value):
+        if self.root == value:
+            return self
+        elif value < self.root and self.left is not None:
+            return self.left._find_node(value)
+        elif value > self.root and self.right is not None:
+            return self.right._find_node(value)
+        else:
+            print("Invalid Operation")
+
+    def _go_furthest(self, direction):
+        if direction == "left":
+            if self.left is not None:
+                return self.left._go_furthest(direction)
+            elif self.right is not None:
+                return self.right._go_furthest(direction)
+            else:
+                return self
+        
+        elif direction == "right":
+            if self.right is not None:
+                return self.right._go_furthest(direction)
+            elif self.left is not None:
+                return self.left._go_furthest(direction)
+            else:
+                return self
+
+    def get_tree(self):
+        if self.root is None:
+            return ''
+        if self.left is None and self.right is None:
+            return self.root
+
+        left_str = '' if self.left is None else self.left.get_tree()
+        right_str = '' if self.right is None else self.right.get_tree()
+        return f"{self.root} [{left_str}, {right_str}]"
+        
+        
+
 def get_full_graph():
     d = {}
     d["YOU"] = ["ALICE","BOB"]
@@ -574,11 +758,18 @@ LISTA = [random.randint(0, 10) for _ in range(100)]
 # LISTA = [10, 5, 14, 12, 13, 16, 16, 17, 0, 0]
 
 s = time.perf_counter()
-r = Sort.quicksort(LISTA.copy())
-e = time.perf_counter() - s
-print(f"\nResult: {e}\n")
+r = BinarySearchTree(10)
+for i in [5, 20, 4, 9, 15, 25, 17]:
+    r.insert(i)
 
-s = time.perf_counter()
-r = Sort.better_quicksort(LISTA.copy())
+# print(r.get_tree())
+r.delete(10)
+# r.insert(8)
+
+print(r.get_left())
+print(r.get_right())
+
+print(r.get_tree())
+
 e = time.perf_counter() - s
 print(f"\nResult: {e}\n")
